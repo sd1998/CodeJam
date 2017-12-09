@@ -1,5 +1,1 @@
-[{"type" : "Lion",
-"status" : "100",
-"feedingtime" : "50",
-  "hstatus" : "false",
-"path" : "src/sample/lion.jpeg"}]
+[{"path":"src\/sample\/lion.jpeg","feedingtime":"50","type":"Lion","status":"0","hstatus":"true"},{"path":null,"feedingtime":"100","type":"Animal","status":"0","hstatus":"true"}]

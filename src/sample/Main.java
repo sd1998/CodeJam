@@ -32,6 +32,8 @@ public class Main extends Application{
     File imageFile;
     Image errorImg;
     ListView<String> currentAnimalList = new ListView<String>();
+    String imagePath;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         screen = primaryStage;
@@ -53,6 +55,7 @@ public class Main extends Application{
             @Override
             public void handle(MouseEvent event) {
                 Scene scene = specificItemUI(currentAnimalList.getSelectionModel().getSelectedIndex());
+                System.out.println(currentAnimalList.getSelectionModel().getSelectedIndex());
                 primaryStage.setScene(scene);
                 primaryStage.show();
             }
@@ -135,9 +138,13 @@ public class Main extends Application{
         Button feedButton = new Button("Feed Animal");
         Button backButton = new Button("Back");
         ImageView posterView = new ImageView();
-        File imageFile = new File(animal.getImagePath());
-        Image image = new Image(imageFile.toURI().toString());
-        posterView.setImage(image);
+        File imageFile;
+        Image image;
+        if(! (animal.getImagePath() == null || animal.getImagePath().length() <= 0)){
+            imageFile = new File(animal.getImagePath());
+            image = new Image(imageFile.toURI().toString());
+            posterView.setImage(image);
+        }
         backButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -197,6 +204,19 @@ public class Main extends Application{
         errorImg = new Image(imageFile.toURI().toString());
         Button addAnimal = new Button("Add");
         Button backButton = new Button("Back");
+        Button addImageButton = new Button("Add Image");
+        addImageButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                JFrame frame = new JFrame();
+                JFileChooser fileChooser = new JFileChooser();
+                int returnVal = fileChooser.showOpenDialog(frame);
+                if(returnVal == JFileChooser.APPROVE_OPTION){
+                    File file = fileChooser.getSelectedFile();
+                    imagePath = file.getPath();
+                }
+            }
+        });
         addAnimal.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
             @Override
             public void handle(javafx.event.ActionEvent event) {
@@ -206,6 +226,7 @@ public class Main extends Application{
                     int feedingTime = Integer.parseInt(animalFeedingTimeField.getText());
                     int currentStatus = Integer.parseInt(animalFeedingTimeField.getText());
                     Animal addedAnimal = new Animal(type,feedingTime,currentStatus,false);
+                    addedAnimal.setImagePath(imagePath);
                     currentAnimals.add(addedAnimal);
                     initTimer(addedAnimal);
                     animalTypeField.setText("");
@@ -231,7 +252,7 @@ public class Main extends Application{
         animalType.getChildren().addAll(animalTypeLabel,animalTypeField,errorImage1);
         animalFeedingTime.getChildren().addAll(animalFeedingTimeLabel,animalFeedingTimeField,errorImage2);
         HBox buttonBox = new HBox(20);
-        buttonBox.getChildren().addAll(addAnimal,backButton);
+        buttonBox.getChildren().addAll(addAnimal,addImageButton,backButton);
         VBox addAnimalLayout = new VBox();
         addAnimalLayout.getChildren().addAll(animalType,animalFeedingTime,animalCurrentStatus,buttonBox);
         Scene animalAddScene = new Scene(addAnimalLayout,700,700);
